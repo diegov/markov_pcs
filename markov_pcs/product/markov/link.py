@@ -13,6 +13,9 @@ class Link:
         self._values = values
         self._length = len(values)
 
+    def __len__(self):
+        return self._length
+
     @property
     def length(self):
         return self._length

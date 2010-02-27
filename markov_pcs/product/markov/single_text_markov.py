@@ -24,11 +24,9 @@ class SingleTextMarkov:
     def graph(self):
         return self._graph
 
-    def slice_text(self, text_to_slice):
-        segment = text_to_slice[ \
-            len(text_to_slice) - self._seq_len:]
-        if len(segment) < self._seq_len: return None
-        return segment
+    @property
+    def seq_len(self):
+        return self._seq_len
 
     def __repr__(self):
         return "Single Text Markov: " + str(self._graph)

@@ -1,22 +1,15 @@
 from link import *
 from graph import *
 from std_random import *
+from text_stream import *
 from single_text_markov import *
 from types import ListType
 import random
 
-class TextMarkov:  
-    def __init__(self, lengths):
-        b = []
-        b.extend(lengths)
-        b.sort(reverse=True)
-        
-        if len(b) == 0: raise Exception('You must provide at least one sequence length', '')
-
-        self._alternatives = []
-        for l in b:
-            self._alternatives.append(SingleTextMarkov(l))
-
+class MarkovBase:
+    def __init__(self, stream, alternatives):
+        self._stream = stream
+        self._alternatives = alternatives
         #master graph
         self._graph = self._alternatives[0].graph
 
@@ -25,13 +18,15 @@ class TextMarkov:
         seqs = []
 
         #using first graph
-        for s in self._graph.sequences:
-            seqs.append(s)
-            
+        for seq in self._graph.sequences:
+            seqs.append(seq)
+
+        #pick sequences in random order
         random.shuffle(seqs)
 
-        for s in seqs:
-            start = "".join(s.values)
+        for seq in seqs:
+            #stream is an immutable object, good for backtracking
+            start = self._stream.append(seq)
             result = self.build_part(start, length - len(start))
             if result != None: break
 
@@ -42,21 +37,23 @@ class TextMarkov:
 
         result = None
         for alt in self._alternatives:
-            segment = alt.slice_text(current_value)
+            segment = current_value.segment_for(alt)
+            #was alt.slice_text(current_value)
             if segment == None: continue
 
             excluded = set()
 
             while True:
-                new_seq = Link.from_s(segment)
-                val = alt.graph.suggest_continuation(new_seq, excluded)
+                val = alt.graph.suggest_continuation(segment, excluded)
                 if val == None: break 
 
-                new_value = ''.join(val.values)
-                rest = self.build_part(current_value + new_value, (remaining - len(new_value)))
-                if rest != None:
-                    result = rest
-                    break
+                #immutable stream, returns None if the value cannot be appended
+                new_value = current_value.append(val)
+                if new_value != None:
+                    rest = self.build_part(new_value, (remaining - len(val)))
+                    if rest != None:
+                        result = rest
+                        break
 
                 excluded.add(val)
 
@@ -64,7 +61,20 @@ class TextMarkov:
 
         return result
 
+class TextMarkov(MarkovBase):  
+    def __init__(self, lengths):
+        b = []
+        b.extend(lengths)
+        b.sort(reverse=True)
+
+        if len(b) == 0: raise Exception('You must provide at least one sequence length', '')
+
+        alternatives = []
+        for l in b:
+            alternatives.append(SingleTextMarkov(l))
+
+        MarkovBase.__init__(self, TextStream(''), alternatives)
+        
     def add_text_block(self, text):
         for a in self._alternatives:
             a.add_text_block(text)
-

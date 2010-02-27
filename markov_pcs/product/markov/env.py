@@ -28,8 +28,8 @@ m = get_markov([3,2,1])
 
 for i in range(0,18):
   value = m.build_seq(17)
-  print value + "\n"
-  m.add_text_block(value)
+  print str(value) + "\n"
+  m.add_text_block(str(value))
 
 print '---- Done ---- '
 

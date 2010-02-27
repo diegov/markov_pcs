@@ -1,4 +1,4 @@
-#!/opt/local/bin/bash
+#!/usr/bin/env/sh
 declare script_dir script_path
 
 # man bash 2>/dev/null | less -p 'BASH_SOURCE'

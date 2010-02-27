@@ -22,10 +22,5 @@ class SingleTextMarkovTests(unittest.TestCase):
         self.assertNotEquals(None, p.graph)
         self.assertEquals(4, len(p.graph.dict.keys()))
 
-    def test_will_slice_text_correctly(self):
-        p = SingleTextMarkov(3, NotRand([1]))
-        slice = p.slice_text('this is the current value')
-        self.assertEqual('lue', slice)
-
 if __name__ == "__main__":
     unittest.main()

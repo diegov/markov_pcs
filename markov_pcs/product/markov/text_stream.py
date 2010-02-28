@@ -5,9 +5,8 @@ class TextStream:
         self._text = local_text
         self._previous_stream = previous_stream
 
-    #TODO return boolean (see markov.py for why)
     def append(self, link):
-        #We get Link objects here
+        #We get Link objects here, we assume they contain string characters
         return TextStream("".join(link.values), self)
 
     def __len__(self):

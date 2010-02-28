@@ -16,7 +16,9 @@ class TextStream:
         return initial
 
     def segment_for(self, alternative):
-        return Link.from_s(self._segment(alternative.seq_len))
+        seg = self._segment(alternative.seq_len)
+        if seg == None: return None
+        return Link.from_s(seg)
 
     def _segment(self, seq_len):
         segment = self._text[len(self._text) - seq_len:]

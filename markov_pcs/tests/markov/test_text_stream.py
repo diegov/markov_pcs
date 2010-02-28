@@ -32,5 +32,16 @@ class TextStreamTests(unittest.TestCase):
         self.assertEqual(expected, seq1)
         self.assertEqual(expected, seq2)
 
+    def test_will_return_none_when_not_enough_characters(self):
+        class thing:
+            pass
+        alt = thing()
+        alt.seq_len = 12
+
+        ts1 = TextStream('this value')
+        seq1 = ts1.segment_for(alt)
+        self.assertEqual(None, seq1)
+        
+
 if __name__ == "__main__":
     unittest.main()

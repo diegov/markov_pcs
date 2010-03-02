@@ -2,6 +2,12 @@ from modal_group import *
 from tone_system import ToneSystem
 import unittest
 
+class NotReallyRand:
+    def next(self):
+        return 1
+    def shuffle(self, list):
+        pass
+
 class ModalGroupTests(unittest.TestCase):
     """Unit tests for the ModalGroup class."""
 
@@ -54,8 +60,34 @@ class ModalGroupTests(unittest.TestCase):
 
         self.assertTrue(ok, 'should have thrown in the constructor')
 
-    #TODO: def test_can_complete_note_sequence
-    #Needs note_stream
+    def test_will_generate_notes_from_pcs(self):
+        ts = ToneSystem(13, rand=NotReallyRand())
+        expected = [1,2,4]
+        expected_pcs = ts.get_pitch_class_set(expected)
+        mode1 = ModalGroup(ts, pcs=expected_pcs)
+        notes = mode1.generate_notes([6])
+        self.assertEqual(expected_pcs, ts.get_pitch_class_set(notes))
+        self.assertEquals(6, notes[0])
+
+    def test_will_generate_notes_from_pcs_with_only_one_note_missing(self):
+        ts = ToneSystem(13, rand=NotReallyRand())
+        expected = [1,2,4]
+        expected_pcs = ts.get_pitch_class_set(expected)
+        mode1 = ModalGroup(ts, pcs=expected_pcs)
+        notes = mode1.generate_notes([5,8])
+        self.assertEqual(expected_pcs, ts.get_pitch_class_set(notes))
+        self.assertEquals(5, notes[0])
+        self.assertEquals(8, notes[1])
+
+    def test_large_pcs_benchmark(self):
+        ts = ToneSystem(42, rand=NotReallyRand())
+        expected = [1,4,7,9,12,5,6,20]
+        expected_pcs = ts.get_pitch_class_set(expected)
+        mode1 = ModalGroup(ts, pcs=expected_pcs)
+        notes = mode1.generate_notes([5,24])
+        self.assertEqual(expected_pcs, ts.get_pitch_class_set(notes))
+        self.assertEquals(5, notes[0])
+        self.assertEquals(24, notes[1])
 
 if __name__ == "__main__":
     unittest.main()

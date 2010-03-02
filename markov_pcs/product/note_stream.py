@@ -9,8 +9,10 @@ class NoteStream:
         self._previous_stream = previous_stream
 
     def append(self, link):
-        #We get Link objects here, we assume they contain string characters
-        return NoteStream(link.values, self)
+        """
+        Assumes the link object contains a list of ints / notes
+        """
+        return NoteStream(self._tone_system, link.values, self)
 
     def segment_for(self, alternative):
         seg = self._segment(alternative.seq_length)
@@ -34,6 +36,15 @@ class NoteStream:
         if self._previous_stream != None:
             initial += len(self._previous_stream)
         return initial
+
+    @property
+    def notes(self):
+        val = []
+        if self._previous_stream != None:
+            val.extend(self._previous_stream.notes)
+        val.extend(self._notes)
+
+        return val
 
     def __repr__(self):
         val = str(self._notes)

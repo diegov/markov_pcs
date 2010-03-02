@@ -37,7 +37,14 @@ class ToneSystemTests(unittest.TestCase):
         pcs = t.get_pitch_class_set([1,2,17])
         self.assertEqual([0], pcs.keys())
         self.assertEqual(3, pcs[0])
-        
+
+    def test_can_return_note_from_base_octave(self):
+        t = ToneSystem(12)
+        note = t.get_pitch_in_base_octave(13)
+        self.assertEqual(1, note, 'positive notes don\'t work')
+        note2 = t.get_pitch_in_base_octave(-1)
+        self.assertEqual(11, note2, 'negative notes don\'t work %i' % (note))
+
 if __name__ == "__main__":
     unittest.main()
 

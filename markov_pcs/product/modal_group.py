@@ -74,7 +74,11 @@ class ModalGroup:
     def _notes_for_interval(self, note, interval):
         n2a = note + interval
         n2b = note - interval
+        result =  [n2a, n2b]
+        self._tone_system.rand.shuffle(result)
+        
         simplified_a = self._tone_system.get_pitch_in_base_octave(n2a)
         simplified_b = self._tone_system.get_pitch_in_base_octave(n2b)
-        if simplified_a == simplified_b: return [n2a]
-        return [n2a, n2b]
+
+        if simplified_a == simplified_b: return result[:1]
+        return result

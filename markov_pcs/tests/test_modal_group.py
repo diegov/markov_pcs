@@ -81,10 +81,24 @@ class ModalGroupTests(unittest.TestCase):
 
     def test_large_pcs_benchmark(self):
         ts = ToneSystem(42, rand=NotReallyRand())
-        expected = [1,4,7,9,12,5,6,20]
+        expected = [1,4,7,9,12,5,6,20,3,2,8,11]
         expected_pcs = ts.get_pitch_class_set(expected)
         mode1 = ModalGroup(ts, pcs=expected_pcs)
         notes = mode1.generate_notes([5,24])
+        self.assertEqual(12, len(notes))
+        self.assertEqual(expected_pcs, ts.get_pitch_class_set(notes))
+        self.assertEquals(5, notes[0])
+        self.assertEquals(24, notes[1])
+
+    def test_large_pcs_benchmark_with_only_2_notes_to_complete(self):
+        ts = ToneSystem(42, rand=NotReallyRand())
+        expected = [1,4,7,9,12,5,6,20,3,2,8,11]
+        expected_pcs = ts.get_pitch_class_set(expected)
+        mode1 = ModalGroup(ts, pcs=expected_pcs)
+        notes = mode1.generate_notes([5,24,6,7,8,9,10,11,12,13])
+        #TODO: should the pcs class has an add note method that returns
+        #a new object? That would help with large groups
+        self.assertEqual(12, len(notes))
         self.assertEqual(expected_pcs, ts.get_pitch_class_set(notes))
         self.assertEquals(5, notes[0])
         self.assertEquals(24, notes[1])

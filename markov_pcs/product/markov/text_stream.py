@@ -32,8 +32,11 @@ class TextStream:
         return segment
 
     def __repr__(self):
-        val = self._text
-        if self._previous_stream != None:
-            val = str(self._previous_stream) + val
+        val = ''
+        current = self
+        while current != None:
+            val = current._text + val
+            current = current._previous_stream
+
         return val
 

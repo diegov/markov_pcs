@@ -6,10 +6,23 @@ from single_text_markov import *
 from types import ListType
 import random
 
+class StackFrame:
+    def __init__(self, current_value, remaining, alternatives, random):
+        self.excluded = set()
+        self.current_alt_index = -1
+        self.current_value = current_value
+        self.remaining = remaining
+        if random != None:
+            self.alternatives = []
+            self.alternatives.extend(alternatives)
+            random.shuffle(self.alternatives)
+        else: self.alternatives = alternatives
+
 class MarkovBase:
-    def __init__(self, stream, alternatives):
+    def __init__(self, stream, alternatives, randomise_alternatives=False):
         self._stream = stream
         self._alternatives = alternatives
+        self._randomise_alternatives = randomise_alternatives
         #master graph
         self._graph = self._alternatives[0].graph
 
@@ -35,29 +48,39 @@ class MarkovBase:
     def build_part(self, current_value, remaining):
         if remaining <= 0: return current_value
 
-        result = None
-        for alt in self._alternatives:
-            segment = current_value.segment_for(alt)
+        stack = []
+        rnd = None
+        if self._randomise_alternatives: rnd = random
+        current_frame = StackFrame(current_value, remaining, self._alternatives, rnd)
+        stack.append(current_frame)
+
+        while current_frame != None:
+            if current_frame.remaining <= 0: break
+
+            current_frame.current_alt_index += 1
+            if current_frame.current_alt_index >= len(self._alternatives):
+                if len(stack) > 0: current_frame = stack.pop()
+                else: break
+                continue
+
+            alt = current_frame.alternatives[current_frame.current_alt_index]
+            segment = current_frame.current_value.segment_for(alt)
             #was alt.slice_text(current_value)
             if segment == None: continue
 
-            excluded = set()
-
             while True:
-                val = alt.graph.suggest_continuation(segment, excluded)
+                val = alt.graph.suggest_continuation(segment, current_frame.excluded)
                 if val == None: break 
 
-                #immutable stream, returns None if the value cannot be appended
-                new_value = current_value.append(val)
+                #TODO: rename excluded to 'done'?
+                current_frame.excluded.add(val)
+                
+                new_value = current_frame.current_value.append(val)
                 if new_value != None:
-                    rest = self.build_part(new_value, (remaining - len(val)))
-                    if rest != None:
-                        result = rest
-                        break
-
-                excluded.add(val)
-
-            if result != None: break
-
-        return result
-
+                    current_frame = StackFrame(new_value, (current_frame.remaining - len(val)), \
+                                                   self._alternatives, rnd)
+                    stack.append(current_frame)
+                    break
+        
+        if current_frame == None: return None
+        return current_frame.current_value

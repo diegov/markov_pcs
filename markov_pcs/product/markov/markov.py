@@ -19,7 +19,7 @@ class TextMarkov(MarkovBase):
         for l in b:
             alternatives.append(SingleTextMarkov(l))
 
-        MarkovBase.__init__(self, TextStream(''), alternatives)
+        MarkovBase.__init__(self, TextStream(''), alternatives, True)
         
     def add_text_block(self, text):
         for a in self._alternatives:

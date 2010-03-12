@@ -2,8 +2,10 @@ from math import sqrt
 from markov.link import Link
 
 class ModalGroup:
-    def __init__(self, tone_system, notes = None, pcs = None):
-        self._notes = notes
+    def __init__(self, tone_system, notes = None, pcs = None, keep_notes = True):
+        if keep_notes: self._notes = notes
+        else: self._notes = None
+
         if notes != None:
             if pcs != None: raise Exception("Can't specify both pcs " + \
                                                 "and notes")

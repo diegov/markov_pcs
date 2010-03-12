@@ -82,7 +82,11 @@ class Graph:
         return None
 
     def __repr__(self):
-        return 'Graph: ' + str(self._graph)
+        ret_val = 'Graph: {\n' 
+        for key in self._graph.keys():
+            ret_val += '  {' + str(key) + ': \n    ' + str(self._graph[key]) + '}\n'
+        ret_val += '}'
+        return ret_val
 
 class IncludeNone:
     def issuperset(self, val):

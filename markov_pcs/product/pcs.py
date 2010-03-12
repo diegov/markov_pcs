@@ -12,6 +12,23 @@ class Pcs(defaultdict):
 
         return True
 
+    def __hash__(self):
+        if len(self) == 0: return 0
+
+        val = 0
+        keys = []
+        keys.extend(self.keys())
+        keys.sort()
+        for k in keys:
+            val = (hash(k) + hash(self[k])) + (37 * val)
+        return val
+
+#    def __eq__(self, other):
+#        return defaultdict.__eq__(self, other)
+
+#    def __ne__(self, other):
+#        return defaultdict.__ne__(self, other)
+
     def __sub__(self, other):
         new_val = Pcs()
         for k in self.keys():

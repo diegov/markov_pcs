@@ -7,22 +7,23 @@ from types import ListType
 import random
 
 class StackFrame:
-    def __init__(self, current_value, remaining, alternatives, random):
+    def __init__(self, current_value, remaining, alternatives, rand):
         self.excluded = set()
         self.current_alt_index = -1
         self.current_value = current_value
         self.remaining = remaining
-        if random != None:
+        if rand != None:
             self.alternatives = []
             self.alternatives.extend(alternatives)
-            random.shuffle(self.alternatives)
+            rand.shuffle(self.alternatives)
         else: self.alternatives = alternatives
 
 class MarkovBase:
-    def __init__(self, stream, alternatives, randomise_alternatives=False):
+    def __init__(self, stream, alternatives, randomise_alternatives=False, rand=None):
         self._stream = stream
         self._alternatives = alternatives
         self._randomise_alternatives = randomise_alternatives
+        self._rand = rand
         #master graph
         self._graph = self._alternatives[0].graph
 
@@ -35,7 +36,7 @@ class MarkovBase:
             seqs.append(seq)
 
         #pick sequences in random order
-        random.shuffle(seqs)
+        self._rand.shuffle(seqs)
 
         for seq in seqs:
             #stream is an immutable object, good for backtracking
@@ -50,7 +51,7 @@ class MarkovBase:
 
         stack = []
         rnd = None
-        if self._randomise_alternatives: rnd = random
+        if self._randomise_alternatives: rnd = self._rand
         current_frame = StackFrame(current_value, remaining, self._alternatives, rnd)
         stack.append(current_frame)
 

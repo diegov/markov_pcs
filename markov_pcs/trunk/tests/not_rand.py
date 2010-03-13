@@ -1,5 +1,5 @@
 class NotRand:
-    def __init__(self, values):
+    def __init__(self, values=[1]):
         self._values = values
         self._index = 0
         self._len = len(values)

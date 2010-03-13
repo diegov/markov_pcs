@@ -28,3 +28,11 @@ class ModalGroupAlternative(MarkovAlternative):
     def __repr__(self):
         return "Modal Group Alternative: " + str(self._graph)
 
+    @property
+    def note_seq_len(self):
+        """
+        This is different from seq_len, which is always one since the sequence
+        element is the modal group, not the notes. 
+        This one is the actual count of notes in a sequence
+        """
+        return self._note_seq_len

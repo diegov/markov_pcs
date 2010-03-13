@@ -17,6 +17,12 @@ class ModalGroupAlternativeTests(unittest.TestCase):
         t = ModalGroupAlternative(ts, 3, rand=NotReallyRand())
         self.assertNotEqual(None, t)
 
+    def test_seq_length_is_always_one(self):
+        ts = ToneSystem(9)
+        t = ModalGroupAlternative(ts, 3, rand=NotReallyRand())
+        length = t.seq_len
+        self.assertEqual(1, length)
+
     def test_can_add_notes(self):
         ts = ToneSystem(9)
         t = ModalGroupAlternative(ts, 3, rand=NotReallyRand())

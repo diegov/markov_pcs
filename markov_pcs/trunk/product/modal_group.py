@@ -25,7 +25,8 @@ class ModalGroup:
     def __hash__(self):
         initial = hash(self._pcs)
         if self._notes != None:
-            initial += hash(self._notes) * 23
+            for note in self._notes:
+                initiall = initial * 23 + hash(note) 
         return initial
     
     def __eq__(self, other):
@@ -84,3 +85,7 @@ class ModalGroup:
 
         if simplified_a == simplified_b: return result[:1]
         return result
+
+    @property
+    def pcs(self):
+        return self._pcs

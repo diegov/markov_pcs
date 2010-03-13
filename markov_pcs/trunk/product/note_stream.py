@@ -69,16 +69,24 @@ class NoteStream:
 
     def __len__(self):
         initial = len(self._notes)
-        if self._previous_stream != None:
-            initial += len(self._previous_stream)
+        prev = self._previous_stream
+        #recursive approach was blowing the stack
+        while prev != None:
+            initial += len(prev._notes)
+            prev = prev._previous_stream
         return initial
 
     @property
     def notes(self):
+        #changed from recursive call
         val = []
-        if self._previous_stream != None:
-            val.extend(self._previous_stream.notes)
-        val.extend(self._notes)
+        prev = self
+        while prev != None:
+            val_next = val
+            val = []
+            val.extend(prev._notes)
+            val.extend(val_next)
+            prev = prev._previous_stream
 
         return val
 

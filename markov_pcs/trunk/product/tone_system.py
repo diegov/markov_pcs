@@ -35,6 +35,9 @@ class ToneSystem:
                 pcs[ival] += 1
         return pcs
 
+    def transpose_octave(self, note, octaves_transpositions):
+        return note + (octaves_transpositions * self._octave_steps)
+
     def get_pitch_in_base_octave(self, pitch):
         """
         Returns a non simplified pitch in the range of 0 .. (octave_steps -1), inclusive

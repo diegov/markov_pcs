@@ -4,6 +4,7 @@ from MidiFile import MIDIFile
 
 from modal_group_markov import ModalGroupMarkov
 from tone_system import ToneSystem
+import random
 
 def adjust_notes(ts, notes):
     low_limit = -50
@@ -36,7 +37,7 @@ def adjust_notes(ts, notes):
                 last_transp > transp_period_notes:
             new_note, transp, last_transp = transp_down(note, transp, last_transp)
 
-        print 'Note: ', note, 'New note: ', new_note
+        #print 'Note: ', note, 'New note: ', new_note
         
         last_transp += 1
 
@@ -49,23 +50,44 @@ def save_file(music_file, notes):
     # Create the MIDIFile Object
     MyMIDI = MIDIFile(1)
 
+    #offsets = [4,1,0,0,0,2,0]
+    offsets = [0,0,0,2,0,1,3,0]
+
     # Add track name and tempo. The first argument to addTrackName and
     # addTempo is the time to write the event.
     track = 0
     time = 0
     MyMIDI.addTrackName(track,time,"Sample Track")
-    MyMIDI.addTempo(track,time, 120)
+    MyMIDI.addTempo(track,time, 90)
 
     channel = 0
     duration = 0.25
     volume = 100
 
-    for note in notes:
-        pitch = 60 + note
-        MyMIDI.addNote(track,channel,pitch,time,duration,volume)
-        time += duration
+    time+=1
 
-    MyMIDI.addNote(track,channel,60,time,2,0)
+    new_time = time
+    
+    for note in notes:
+        last_time = new_time
+        random.shuffle(offsets)
+        offset = offsets[0]
+
+        new_time = time - (duration * offset)
+        new_duration = duration * (1 + offset)
+        
+        if new_time < last_time: 
+            new_time = last_time
+            new_duration = time + 1 - new_time
+        
+        pitch = 60 + note
+        print new_time, new_duration, pitch
+        MyMIDI.addNote(track,channel,pitch,new_time,new_duration,volume)
+        time += duration
+        print 'time is now: ', time
+        print 'duration is now: ', duration
+
+    MyMIDI.addNote(track,channel,55,time,2,0)
 
     binfile = open(music_file, 'wb')
     MyMIDI.writeFile(binfile)
@@ -101,12 +123,44 @@ pygame.mixer.music.set_volume(0.8)
 
 ts = ToneSystem(12)
 m = ModalGroupMarkov(ts, [4,5,3,6])
-m.add_notes([1,4,3,4,7,8,1,2,5,9])
-m.add_notes([1,4,2,4,7,8,11,2,5,9])
-m.add_notes([4,7,8,11,14,15])
+#m.add_notes([1,4,3,4,7,8,1,2,5,9])
+#m.add_notes([1,4,2,4,7,8,11,2,5,9])
+#m.add_notes([4,7,8,11,14,15])
 m.add_notes([0,2,4,5,7,3])
 m.add_notes([0,2,4,5,3])
 m.add_notes([0,2,3,5,7,4])
+
+#new
+m.add_notes([0,2,4,5,7,9])
+m.add_notes([0,2,4,7,5,4])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,4,7,3,2])
+m.add_notes([0,3,7,4,2])
+
+#add weight to these
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+m.add_notes([0,2,4,5,7,9,11])
+m.add_notes([12,11,9,7,5,4,2,1])
+
+
 
 seq = m.build_seq(300)
 

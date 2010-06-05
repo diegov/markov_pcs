@@ -44,6 +44,12 @@ class ToneSystem:
         """
         return pitch % self._octave_steps
 
+    def get_octave_and_base_pitch(self, pitch):
+        """
+        Returns the pitch in base octave and the octave itself
+        """
+        return divmod(pitch, self._octave_steps)
+
     @property
     def rand(self):
         return self._rand

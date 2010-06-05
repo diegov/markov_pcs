@@ -1,5 +1,7 @@
+import sys
 import pygame
 import base64
+import random
 from MidiFile import MIDIFile
 
 from modal_group_markov import ModalGroupMarkov
@@ -7,8 +9,8 @@ from tone_system import ToneSystem
 import random
 
 def adjust_notes(ts, notes):
-    low_limit = -50
-    high_limit = 45
+    low_limit = -30
+    high_limit = 35
     transp_period_notes = 15
     transp_margin = 15
 
@@ -62,7 +64,7 @@ def save_file(music_file, notes):
 
     channel = 0
     duration = 0.25
-    volume = 100
+    volume = 80
 
     time+=1
 
@@ -82,7 +84,7 @@ def save_file(music_file, notes):
         
         pitch = 60 + note
         print new_time, new_duration, pitch
-        MyMIDI.addNote(track,channel,pitch,new_time,new_duration,volume)
+        MyMIDI.addNote(track,channel,pitch,(new_time + 0.05*(random.random()-0.5)),new_duration,volume + int(20*random.random()))
         time += duration
         print 'time is now: ', time
         print 'duration is now: ', duration
@@ -123,46 +125,33 @@ pygame.mixer.music.set_volume(0.8)
 
 ts = ToneSystem(12)
 m = ModalGroupMarkov(ts, [4,5,3,6])
-#m.add_notes([1,4,3,4,7,8,1,2,5,9])
-#m.add_notes([1,4,2,4,7,8,11,2,5,9])
-#m.add_notes([4,7,8,11,14,15])
-m.add_notes([0,2,4,5,7,3])
-m.add_notes([0,2,4,5,3])
-m.add_notes([0,2,3,5,7,4])
 
-#new
-m.add_notes([0,2,4,5,7,9])
-m.add_notes([0,2,4,7,5,4])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,4,7,3,2])
-m.add_notes([0,3,7,4,2])
+#for i in range(0,10):
+#    m.add_notes([0,3,6,7,10])
 
-#add weight to these
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
-m.add_notes([0,2,4,5,7,9,11])
-m.add_notes([12,11,9,7,5,4,2,1])
+#for i in range(0,2):
+#    m.add_notes([0,2,1,4,5,8])
 
+#for i in range(0,12):
+#    m.add_notes([0,1,4,6,7,5])
 
+for i in range(0,30):
+    m.add_notes([0,4,7,12,4,7,12,4,7,12])
+
+for i in range(0,10):
+    m.add_notes([0,4,7,11,12,4,7,11,12,4])
+
+for i in range(0,10):
+    m.add_notes([0,3,7,10,12,3,7,10,12])
+
+for i in range(0,2):
+    m.add_notes([0,2,4,8,0,2,4,8,11,15])
 
 seq = m.build_seq(300)
+
+if seq == None:
+    print 'no sequence produced'
+    sys.exit(1)
 
 notes = adjust_notes(ts, seq.notes)
 

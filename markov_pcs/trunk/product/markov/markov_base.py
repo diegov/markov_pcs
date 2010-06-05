@@ -38,11 +38,14 @@ class MarkovBase:
         #pick sequences in random order
         self._rand.shuffle(seqs)
 
+        print 'Total seqs:', len(seqs)
+
         for seq in seqs:
             #stream is an immutable object, good for backtracking
+            print 'Using seq:', seq
             start = self._stream.append(seq)
             result = self.build_part(start, length - len(start))
-            if result != None: break
+            if result != None and len(result) >= length: break
 
         return result
 

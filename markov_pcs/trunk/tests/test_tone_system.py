@@ -45,6 +45,25 @@ class ToneSystemTests(unittest.TestCase):
         note2 = t.get_pitch_in_base_octave(-1)
         self.assertEqual(11, note2, 'negative notes don\'t work %i' % (note))
 
+    def test_can_return_octave_and_pitch_from_positive_absolute_pitch(self):
+        t = ToneSystem(12)
+        octave, note = t.get_octave_and_base_pitch(28)
+        self.assertEqual(4, note)
+        self.assertEqual(2, octave)
+
+    def test_can_return_octave_and_pitch_from_negative_absolute_pitch(self):
+        t = ToneSystem(14)
+        octave, note = t.get_octave_and_base_pitch(-1)
+        self.assertEqual(13, note)
+        self.assertEqual(-1, octave)
+
+    #TODO:
+    #def can return absolute pitch from octave and base pitch
+    #Then add ToneSystem.map(source_notes, map)
+    #Then use 7 note tone system and map to tempered 12
+    #or use 12 note tone system and map to 27 tone system, where
+    #9 steps are 2 and 3 are 3
+
 if __name__ == "__main__":
     unittest.main()
 

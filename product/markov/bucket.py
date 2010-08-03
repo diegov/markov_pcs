@@ -12,7 +12,8 @@ class Bucket:
         return self._values[key]
     
     def __setitem__(self, key, value):
-
+        #We do this to avoid invalidating the 
+        #calculated weights
         if self._values.has_key(key):
             curr = self._values[key]
             if curr == value:

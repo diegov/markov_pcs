@@ -83,6 +83,9 @@ class ModalGroup:
         simplified_a = self._tone_system.get_pitch_in_base_octave(n2a)
         simplified_b = self._tone_system.get_pitch_in_base_octave(n2b)
 
+        #The success of the recursion will not depend on the octave, so
+        #shuffle and return only one to prevent the caller from trying
+        #2 equivalent sequences. 
         if simplified_a == simplified_b: return result[:1]
         return result
 
